@@ -168,6 +168,21 @@ Download:
 `https://files.webraa.com/bbplayer-2.7.0-responsive-1227-armeabi-v7a.apk`.
 R8 mappings: `/opt/bbplayer/artifacts/mapping-1227-armeabi-v7a`.
 
+The ARM64 Release build also succeeded, in 20m 59s. Its APK is 81,271,893
+bytes, contains only `arm64-v8a`, and has the same package ID, versionCode,
+minimum SDK and signing certificate as the v7a build. APK signature
+verification passed. The remote build, current server file and complete
+HTTPS download all match:
+`a6475cc3a7705b27b6c02a105008967097346facdc0b989f0b5d65bd334057b8`.
+
+Download:
+`https://files.webraa.com/bbplayer-2.7.0-responsive-1227-arm64-v8a.apk`.
+R8 mappings: `/opt/bbplayer/artifacts/mapping-1227-arm64-v8a`.
+Both new files are stored in `/var/www/bbplayer`; `SHA256SUMS` includes the
+new and previous APKs. Application source is recorded in fork commit
+`99b4e190` on `wiuid/BBPlayer-car` branch `dev`; README and build records
+were edited after the source snapshot and do not affect APK contents.
+
 ### Previous wide-screen update, versionCode 1226
 
 The ARM64 preview Release build completed successfully in 49m 24s. The host
