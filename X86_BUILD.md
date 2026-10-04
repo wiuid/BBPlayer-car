@@ -5,8 +5,8 @@
 The current ARM server owns the source changes and public downloads. The x86
 host is used only for Android compilation. Do not install x86 Android SDK
 executables on the ARM server. The upstream app version remains `2.7.0`;
-the persistent split-workspace update uses Android `versionCode=1228`
-(previous phone-landscape update: 1227; initial wide-screen update: 1226).
+the maximize/restore update uses Android `versionCode=1229`
+(split workspace: 1228; phone landscape: 1227; initial wide screen: 1226).
 
 ### Set up the x86 host
 
@@ -89,9 +89,9 @@ swapon --show
 # Only if the existing swap file is inactive:
 # swapon /opt/bbplayer/build.swap
 cd /opt/bbplayer/source/BBPlayer
-VERSION_CODE=1228 bash scripts/build-android-preview.sh armeabi-v7a \
+VERSION_CODE=1229 bash scripts/build-android-preview.sh armeabi-v7a \
   > /opt/bbplayer/build-responsive-v7a.log 2>&1
-VERSION_CODE=1228 bash scripts/build-android-preview.sh arm64-v8a \
+VERSION_CODE=1229 bash scripts/build-android-preview.sh arm64-v8a \
   > /opt/bbplayer/build-responsive-arm64.log 2>&1
 ```
 
@@ -112,15 +112,15 @@ to the ARM server; the download domain must not depend on the build host.
 
 ```bash
 # Run on the current ARM server; transfer to a temporary file first.
-scp root@60.205.142.63:/opt/bbplayer/artifacts/bbplayer-2.7.0-responsive-1228-armeabi-v7a.apk \
-  /var/www/bbplayer/bbplayer-2.7.0-responsive-1228-armeabi-v7a.apk.part
-mv /var/www/bbplayer/bbplayer-2.7.0-responsive-1228-armeabi-v7a.apk.part \
-  /var/www/bbplayer/bbplayer-2.7.0-responsive-1228-armeabi-v7a.apk
+scp root@60.205.142.63:/opt/bbplayer/artifacts/bbplayer-2.7.0-responsive-1229-armeabi-v7a.apk \
+  /var/www/bbplayer/bbplayer-2.7.0-responsive-1229-armeabi-v7a.apk.part
+mv /var/www/bbplayer/bbplayer-2.7.0-responsive-1229-armeabi-v7a.apk.part \
+  /var/www/bbplayer/bbplayer-2.7.0-responsive-1229-armeabi-v7a.apk
 # Repeat the transfer and rename for arm64-v8a.
 cd /var/www/bbplayer
 sha256sum *.apk > SHA256SUMS
 curl --fail --location \
-  https://files.webraa.com/bbplayer-2.7.0-responsive-1228-armeabi-v7a.apk \
+  https://files.webraa.com/bbplayer-2.7.0-responsive-1229-armeabi-v7a.apk \
   --output /tmp/bbplayer-responsive-v7a-download.apk
 sha256sum /tmp/bbplayer-responsive-v7a-download.apk
 ```
@@ -154,6 +154,30 @@ Root lint reports the pre-existing unnecessary assertion in
 `apps/mobile/src/app/settings/account.tsx:74`.
 
 ## Build state
+
+### Maximize and restore player, versionCode 1229
+
+The landscape player's fullscreen icon switches from browsing plus player
+to a maximized workspace: cover and audio controls on the left, lyrics on
+the right. The fullscreen-exit icon and Android back restore the split
+workspace. The browsing navigator and player stay mounted across switches,
+preserving page state and sharing the same playback engine. Portrait
+rotation clears maximized mode. Actions opening another route restore
+browsing so the target page remains visible.
+
+Three Jest suites passed (13 tests); the six component tests include
+maximize/restore, preserving browsing content and the player instance,
+rotation, opening another route, and Android back. Root checks still report
+only the existing backend `Env` and account-page assertion failures.
+
+```bash
+VERSION_CODE=1229 bash scripts/build-android-preview.sh armeabi-v7a \
+  > /opt/bbplayer/build-maximize-v7a.log 2>&1
+```
+
+Physical-device checks remain necessary: verify fullscreen and restore
+icons, left cover/controls and right lyrics, long titles, playback continuity,
+restored list position, Android back, rotation, music and podcast playback.
 
 ### Persistent split workspace, versionCode 1228
 

@@ -16,13 +16,21 @@ import { resolveBilibiliImageUrl, resolveTrackCover } from '@/utils/imageUrl'
 
 import { PlayerSlider } from './PlayerSlider'
 
-export default function PlayerDock({ width }: { width: number }) {
+export default function PlayerDock({
+	width,
+	maximized,
+	onToggleMaximized,
+}: {
+	width: number
+	maximized: boolean
+	onToggleMaximized: () => void
+}) {
 	const { colors } = useTheme()
 	const insets = useSafeAreaInsets()
 	const track = useCurrentTrack()
 	const [height, setHeight] = useState(0)
 	const compact = height < 440
-	const minimal = height - insets.top - insets.bottom < 260
+	const minimal = height - insets.top - insets.bottom - 48 < 260
 	const cover = track
 		? resolveBilibiliImageUrl(
 				resolveTrackCover(track.uniqueKey, track.coverUrl),
@@ -39,12 +47,23 @@ export default function PlayerDock({ width }: { width: number }) {
 					width,
 					paddingTop: insets.top + 8,
 					paddingBottom: insets.bottom + 8,
-					paddingRight: insets.right + 8,
+					paddingLeft: maximized ? insets.left + 8 : 8,
+					paddingRight: maximized ? 8 : insets.right + 8,
 					backgroundColor: colors.elevation.level1,
 					borderLeftColor: colors.outlineVariant,
 				},
 			]}
 		>
+			<View style={styles.dockHeader}>
+				<IconButton
+					icon={maximized ? 'fullscreen-exit' : 'fullscreen'}
+					size={28}
+					style={styles.detailsButton}
+					accessibilityLabel={maximized ? '恢复分屏' : '最大化播放器'}
+					disabled={!track && !maximized}
+					onPress={onToggleMaximized}
+				/>
+			</View>
 			{track ? (
 				<Show if={playbackContextStore$.ready}>
 					<View style={[styles.track, compact && styles.compactTrack]}>
@@ -55,13 +74,24 @@ export default function PlayerDock({ width }: { width: number }) {
 								style={[
 									styles.cover,
 									compact
-										? styles.smallCover
+										? maximized
+											? {
+													width: Math.max(
+														48,
+														Math.min(
+															96,
+															height - insets.top - insets.bottom - 264,
+														),
+													),
+													aspectRatio: 1,
+												}
+											: styles.smallCover
 										: {
 												width: Math.min(
-													width - insets.right - 40,
+													width - (maximized ? insets.left : insets.right) - 40,
 													Math.max(
 														80,
-														height - insets.top - insets.bottom - 310,
+														height - insets.top - insets.bottom - 358,
 													),
 												),
 												aspectRatio: 1,
@@ -84,22 +114,26 @@ export default function PlayerDock({ width }: { width: number }) {
 								{track.artist?.name}
 							</Text>
 						</View>
-						<IconButton
-							icon={minimal ? 'format-list-bulleted' : 'text-box-outline'}
-							size={24}
-							style={styles.detailsButton}
-							accessibilityLabel={minimal ? '播放队列' : '查看歌词'}
-							onPress={() => {
-								if (minimal) {
-									void usePlayerQueueSheetStore.getState().open()
-								} else {
-									router.navigate('/player')
-								}
-							}}
-						/>
+						{(!maximized || minimal) && (
+							<IconButton
+								icon={minimal ? 'format-list-bulleted' : 'text-box-outline'}
+								size={24}
+								style={styles.detailsButton}
+								accessibilityLabel={minimal ? '播放队列' : '查看歌词'}
+								onPress={() => {
+									if (minimal) {
+										void usePlayerQueueSheetStore.getState().open()
+									} else {
+										router.navigate('/player')
+									}
+								}}
+							/>
+						)}
 					</View>
 					<View style={styles.controls}>
-						{height - insets.top - insets.bottom >= 180 && <PlayerSlider />}
+						{height - insets.top - insets.bottom - 48 >= 180 && (
+							<PlayerSlider />
+						)}
 						{minimal ? (
 							<MainPlaybackControls size='compact' />
 						) : (
@@ -131,6 +165,12 @@ const styles = StyleSheet.create({
 		paddingLeft: 8,
 		borderLeftWidth: StyleSheet.hairlineWidth,
 		justifyContent: 'space-between',
+	},
+	dockHeader: {
+		height: 48,
+		flexShrink: 0,
+		flexDirection: 'row',
+		justifyContent: 'flex-end',
 	},
 	track: {
 		flex: 1,
