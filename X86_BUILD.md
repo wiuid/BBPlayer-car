@@ -179,6 +179,19 @@ Physical-device checks remain necessary: verify fullscreen and restore
 icons, left cover/controls and right lyrics, long titles, playback continuity,
 restored list position, Android back, rotation, music and podcast playback.
 
+The v7a Release build succeeded in 20m 36s. The APK is 65,257,957 bytes,
+contains only `armeabi-v7a`, and has package ID
+`com.roitium.bbplayer.preview`, versionCode 1229 and minimum SDK 26. APK
+signature verification passed with the same certificate as previous builds.
+Remote artifact, current server file and complete HTTPS download all match:
+`9c3c765068a16739c25d124e47b697ae0ef44ef9fc4843b935520b5c15d7ebe0`.
+
+Download:
+`https://files.webraa.com/bbplayer-2.7.0-responsive-1229-armeabi-v7a.apk`.
+R8 mappings: `/opt/bbplayer/artifacts/mapping-1229-armeabi-v7a`.
+Application source commit: `3a3dd20c`. Only v7a was rebuilt; the published
+ARM64 preview remains versionCode 1227.
+
 ### Persistent split workspace, versionCode 1228
 
 This preview adds a root-level split workspace for landscape windows with
