@@ -69,6 +69,7 @@ export function PodcastControls({ compact = false }: { compact?: boolean }) {
 						iconColor={colors.onSurfaceVariant}
 						onPress={action.onPress}
 						accessibilityLabel={action.accessibilityLabel}
+						style={{ width: 48, height: 48, margin: 4 }}
 					/>
 				))}
 			</SecondaryPlaybackControls>

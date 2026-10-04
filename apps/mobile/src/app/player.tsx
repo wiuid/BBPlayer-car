@@ -28,6 +28,7 @@ import {
 } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import IconButton from '@/components/common/IconButton'
 import Lyrics from '@/features/player/components/lyrics/PlayerLyrics'
 import { PlayerChaptersSheet } from '@/features/player/components/main/PlayerChaptersSheet'
 import { PlayerHeader } from '@/features/player/components/main/PlayerHeader'
@@ -40,6 +41,7 @@ import { playbackContextStore$ } from '@/hooks/stores/playbackContextStore'
 import useAppStore from '@/hooks/stores/useAppStore'
 import { usePlayerChaptersSheetStore } from '@/hooks/stores/usePlayerChaptersSheetStore'
 import { usePlayerQueueSheetStore } from '@/hooks/stores/usePlayerQueueSheetStore'
+import { useSplitWorkspace } from '@/hooks/ui/useWorkspaceLayout'
 import { resolveBilibiliImageUrl, resolveTrackCover } from '@/utils/imageUrl'
 import log, { reportErrorToSentry } from '@/utils/log'
 
@@ -75,6 +77,7 @@ function usePageScrollHandler(
 const logger = log.extend('App.Player')
 
 export default function PlayerPage() {
+	const isSplit = useSplitWorkspace()
 	const theme = useTheme()
 	const colors = theme.colors
 	const insets = useSafeAreaInsets()
@@ -264,6 +267,30 @@ export default function PlayerPage() {
 			scrollX.set(e.offset + e.position)
 		},
 	})
+
+	if (isSplit) {
+		return (
+			<View
+				style={[
+					styles.fullScreen,
+					{ backgroundColor: colors.background, paddingTop: insets.top },
+				]}
+			>
+				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<IconButton
+						icon='arrow-left'
+						size={28}
+						accessibilityLabel='返回'
+						onPress={dismissPlayer}
+					/>
+				</View>
+				<Lyrics
+					currentIndex={1}
+					embedded
+				/>
+			</View>
+		)
+	}
 
 	return (
 		<View style={styles.fullScreen}>

@@ -47,6 +47,7 @@ import useSkinStore from '@/hooks/stores/useSkinStore'
 import useActiveSkin from '@/hooks/theme/useActiveSkin'
 import useSkinForegroundColor from '@/hooks/theme/useSkinForegroundColor'
 import { useNowPlayingBar } from '@/hooks/ui/useNowPlayingBar'
+import { useSplitWorkspace } from '@/hooks/ui/useWorkspaceLayout'
 import db from '@/lib/db/db'
 import * as schema from '@/lib/db/schema'
 import { markPerfInteractive } from '@/lib/performance'
@@ -69,6 +70,7 @@ const getGreetingMsg = () => {
 }
 
 function HomePage() {
+	const isSplit = useSplitWorkspace()
 	useNowPlayingBar()
 	const theme = useTheme()
 	const { colors } = theme
@@ -285,12 +287,14 @@ function HomePage() {
 			<View
 				style={{
 					paddingTop: insets.top,
+					flex: 1,
 				}}
 			>
 				<View
 					style={[
 						styles.greetingContainer,
 						{ paddingHorizontal: 16, height: 56 },
+						isSplit && { display: 'none' },
 					]}
 				>
 					<View>
@@ -352,7 +356,7 @@ function HomePage() {
 					</View>
 				</View>
 
-				<View style={styles.searchSection}>
+				<View style={[styles.searchSection, isSplit && { marginTop: 0 }]}>
 					{/* 搜索栏 */}
 					<View style={styles.searchbarContainer}>
 						<View ref={searchBarRef}>
@@ -391,32 +395,35 @@ function HomePage() {
 				{/* 快捷操作与内容区，加上 ScrollView 让它可滚动 */}
 				{!enableMinimalistMode && (
 					<Animated.ScrollView
+						style={{ flex: 1 }}
 						contentContainerStyle={styles.scrollContent}
 						showsVerticalScrollIndicator={false}
 					>
-						<WeeklyHeatMap
-							data={heatmapData || {}}
-							cellSize={18}
-							cellGap={4}
-							cellRadius={4}
-							initialScrollEnd={true}
-							locale='zh-cn'
-							onCellPress={({ date }) => {
-								const dateStr = dayjs(date).format('YYYY-MM-DD')
-								router.push(`/history/${dateStr}`)
-							}}
-							scheme={theme.dark ? 'dark' : 'light'}
-							cellColor={{
-								1: Color(colors.primary).alpha(0.2).rgb().string(),
-								2: Color(colors.primary).alpha(0.4).rgb().string(),
-								3: Color(colors.primary).alpha(0.6).rgb().string(),
-								4: colors.primary,
-							}}
-							cellDefaultColor={colors.surfaceVariant}
-							headerTextColor={colors.onSurfaceVariant}
-							sidebarTextColor={colors.onSurfaceVariant}
-							scrollStyle={{ marginHorizontal: 16, marginBottom: 16 }}
-						/>
+						{!isSplit && (
+							<WeeklyHeatMap
+								data={heatmapData || {}}
+								cellSize={18}
+								cellGap={4}
+								cellRadius={4}
+								initialScrollEnd={true}
+								locale='zh-cn'
+								onCellPress={({ date }) => {
+									const dateStr = dayjs(date).format('YYYY-MM-DD')
+									router.push(`/history/${dateStr}`)
+								}}
+								scheme={theme.dark ? 'dark' : 'light'}
+								cellColor={{
+									1: Color(colors.primary).alpha(0.2).rgb().string(),
+									2: Color(colors.primary).alpha(0.4).rgb().string(),
+									3: Color(colors.primary).alpha(0.6).rgb().string(),
+									4: colors.primary,
+								}}
+								cellDefaultColor={colors.surfaceVariant}
+								headerTextColor={colors.onSurfaceVariant}
+								sidebarTextColor={colors.onSurfaceVariant}
+								scrollStyle={{ marginHorizontal: 16, marginBottom: 16 }}
+							/>
+						)}
 						{/* 快捷入口 */}
 						<View style={styles.quickAccessSection}>
 							<Text
@@ -600,7 +607,7 @@ function HomePage() {
 							</View>
 						)}
 						{/* 底部留白给播放条 */}
-						<View style={{ height: 200 }} />
+						<View style={{ height: isSplit ? 24 : 200 }} />
 					</Animated.ScrollView>
 				)}
 			</View>

@@ -13,6 +13,7 @@ import { useTheme } from 'react-native-paper'
 
 import useSkinStore from '@/hooks/stores/useSkinStore'
 import useActiveSkin from '@/hooks/theme/useActiveSkin'
+import { useSplitWorkspace } from '@/hooks/ui/useWorkspaceLayout'
 
 const BottomTabNavigator = createNativeBottomTabNavigator().Navigator
 
@@ -33,6 +34,7 @@ const libraryIcon = Icon.getImageSourceSync('bookshelf', 24) as nonNullableIcon
 const settingsIcon = Icon.getImageSourceSync('cog', 24) as nonNullableIcon
 
 export default function TabLayout() {
+	const isSplit = useSplitWorkspace()
 	const themes = useTheme().colors
 	const activeSkin = useActiveSkin()
 	const activeSkinIndex = useSkinStore((state) => state.activeSkinIndex)
@@ -48,6 +50,7 @@ export default function TabLayout() {
 
 	return (
 		<Tabs
+			tabBarHidden={isSplit}
 			disablePageAnimations
 			disableTintColor={useSkinTabs}
 			iconSize={useSkinTabs ? 50 : undefined}

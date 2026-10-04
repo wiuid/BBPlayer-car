@@ -38,6 +38,7 @@ import {
 } from '@/hooks/stores/nowPlayingBarStore'
 import useAppStore from '@/hooks/stores/useAppStore'
 import { usePlayerQueueSheetStore } from '@/hooks/stores/usePlayerQueueSheetStore'
+import { useSplitWorkspace } from '@/hooks/ui/useWorkspaceLayout'
 import * as Haptics from '@/utils/haptics'
 import { resolveTrackCover } from '@/utils/imageUrl'
 
@@ -103,13 +104,14 @@ const playPause = async () => {
 }
 
 function NowPlayingBar() {
+	const isSplit = useSplitWorkspace()
 	const segments = useSegments()
 	// hiddenScreenActive 在离开隐藏页面后会保持到返回动画结束，避免转场过程中
 	// 提前显示；segments 判断则保证进入隐藏页面时立即隐藏。
 	const hiddenScreenActive = useValue(nowPlayingBarStore$.hiddenScreenActive)
 	const shouldShow =
 		!hiddenScreenActive && !HIDDEN_SEGMENT_ROOTS.has(segments[0] ?? '')
-	if (!shouldShow) {
+	if (isSplit || !shouldShow) {
 		return null
 	}
 

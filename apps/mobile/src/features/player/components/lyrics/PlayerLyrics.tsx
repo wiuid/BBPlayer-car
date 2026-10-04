@@ -39,9 +39,11 @@ import { LyricsOffsetControl } from './LyricsOffsetControl'
 const Lyrics = memo(function Lyrics({
 	currentIndex,
 	onPressBackground,
+	embedded = false,
 }: {
 	currentIndex: number
 	onPressBackground?: () => void
+	embedded?: boolean
 }) {
 	const dimensions = useWindowDimensions()
 	const insets = useSafeAreaInsets()
@@ -50,7 +52,9 @@ const Lyrics = memo(function Lyrics({
 		dimensions.height,
 		insets.bottom,
 	)
-	const windowHeight = dimensions.height
+	const [viewportHeight, setViewportHeight] = useState(0)
+	const windowHeight =
+		embedded && viewportHeight ? viewportHeight : dimensions.height
 	const colors = useTheme().colors
 	const isFluidBackground = useAppStore(
 		(state) => state.settings.playerBackgroundStyle === 'fluid',
@@ -349,12 +353,14 @@ const Lyrics = memo(function Lyrics({
 	return (
 		<View
 			style={styles.lyricsContainer}
+			onLayout={(event) => setViewportHeight(event.nativeEvent.layout.height)}
 			testID='player-lyrics-view'
 		>
 			<View
 				style={[
 					styles.lyricsContent,
-					dimensions.width > dimensions.height &&
+					!embedded &&
+						dimensions.width > dimensions.height &&
 						dimensions.height < 550 && {
 							marginBottom: lyricsControlsHeight - 40,
 						},
@@ -368,7 +374,7 @@ const Lyrics = memo(function Lyrics({
 							pointerEvents='none'
 						>
 							<LinearGradient
-								style={[styles.gradient]}
+								style={[styles.gradient, embedded && { height: 16 }]}
 								start={{ x: 0, y: 0 }}
 								end={{ x: 0, y: 1 }}
 								colors={['transparent', colors.background]}
@@ -385,16 +391,20 @@ const Lyrics = memo(function Lyrics({
 							<LinearGradient
 								style={[
 									styles.gradient,
-									isFluidBackground && {
-										height: lyricsControlsHeight,
-									},
+									embedded
+										? { height: 16 }
+										: isFluidBackground && {
+												height: lyricsControlsHeight,
+											},
 								]}
 								start={{ x: 0, y: 0 }}
 								end={{ x: 0, y: 1 }}
 								colors={[colors.background, 'transparent']}
 								locations={[
 									0,
-									isFluidBackground ? 60 / lyricsControlsHeight : 1,
+									!embedded && isFluidBackground
+										? 60 / lyricsControlsHeight
+										: 1,
 								]}
 							/>
 						</View>
@@ -405,18 +415,20 @@ const Lyrics = memo(function Lyrics({
 			</View>
 
 			{/* 播放器控件覆盖层 */}
-			<LyricsControlOverlay
-				offsetMenuVisible={offsetMenuVisible}
-				showTranslationToggle={!!lyrics?.tlyric && !!lyrics?.romalrc}
-				translationType={preferredLyricType}
-				onToggleTranslation={() =>
-					setPreferredLyricType((prev) =>
-						prev === 'translation' ? 'romaji' : 'translation',
-					)
-				}
-				onEditLyrics={handleEditLyrics}
-				onOpenOffsetMenu={handleOpenOffsetMenu}
-			/>
+			{!embedded && (
+				<LyricsControlOverlay
+					offsetMenuVisible={offsetMenuVisible}
+					showTranslationToggle={!!lyrics?.tlyric && !!lyrics?.romalrc}
+					translationType={preferredLyricType}
+					onToggleTranslation={() =>
+						setPreferredLyricType((prev) =>
+							prev === 'translation' ? 'romaji' : 'translation',
+						)
+					}
+					onEditLyrics={handleEditLyrics}
+					onOpenOffsetMenu={handleOpenOffsetMenu}
+				/>
+			)}
 
 			{/* 歌词偏移量调整面板 */}
 			<LyricsOffsetControl

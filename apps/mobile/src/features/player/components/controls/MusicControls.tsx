@@ -54,6 +54,7 @@ export function MusicControls({
 						})
 					}}
 					testID='player-mode-shuffle'
+					style={{ width: 48, height: 48, margin: 4 }}
 				/>
 				<IconButton
 					icon={
@@ -85,6 +86,7 @@ export function MusicControls({
 						})
 					}}
 					testID='player-mode-repeat'
+					style={{ width: 48, height: 48, margin: 4 }}
 				/>
 				<IconButton
 					icon='comment-text-outline'
@@ -99,6 +101,7 @@ export function MusicControls({
 						}
 					}}
 					testID='player-open-comments'
+					style={{ width: 48, height: 48, margin: 4 }}
 				/>
 				<IconButton
 					icon='format-list-bulleted'
@@ -110,6 +113,7 @@ export function MusicControls({
 						void analyticsService.logPlayerQueueAction('open_queue')
 					}}
 					testID='player-open-queue'
+					style={{ width: 48, height: 48, margin: 4 }}
 				/>
 			</SecondaryPlaybackControls>
 		</View>
