@@ -183,6 +183,20 @@ long titles do not displace controls; portrait rotation restores normal
 navigation; search keyboard leaves core controls usable. Also test an empty
 queue, music and podcast playback, lyrics navigation, and queue dialogs.
 
+The v7a Release build succeeded in 21m 11s. The APK is 65,273,301 bytes,
+contains only `armeabi-v7a`, and has package ID
+`com.roitium.bbplayer.preview`, versionCode 1228 and minimum SDK 26. APK
+signature verification passed, with the same signing certificate as 1227.
+The remote artifact, current server static file and complete HTTPS download
+all match SHA-256:
+`7a2b48a67dfd2ef6eceabe38f42e44abd8a444eddd90b7adb1a9db9542348ea5`.
+
+Download:
+`https://files.webraa.com/bbplayer-2.7.0-responsive-1228-armeabi-v7a.apk`.
+R8 mappings: `/opt/bbplayer/artifacts/mapping-1228-armeabi-v7a`.
+Application source commit: `9706f5da`. Only v7a was rebuilt for this preview;
+the published ARM64 APK remains versionCode 1227 with the previous layout.
+
 ### Phone-landscape update, versionCode 1227
 
 The 2026-10-04 v7a Release build succeeded in 19m 47s. Its APK is
