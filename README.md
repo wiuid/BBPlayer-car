@@ -1,6 +1,10 @@
 # BBPlayer-car
 
 支持手机横屏、平板和 Android 车机宽屏界面的 BBPlayer 分支。
+<img width="2400" height="1080" alt="Screenshot_2026-10-04-11-39-05-014_com roitium bbplayer preview" src="https://github.com/user-attachments/assets/32861b8f-8fd3-4d82-8253-1f5d217c5e4a" />
+
+<img width="2400" height="1080" alt="Screenshot_2026-10-04-11-39-08-998_com roitium bbplayer preview" src="https://github.com/user-attachments/assets/f670e672-40c2-4749-9c2c-b706fce3bca4" />
+
 
 ## 界面适配
 
