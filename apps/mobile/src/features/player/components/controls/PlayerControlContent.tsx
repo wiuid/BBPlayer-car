@@ -113,7 +113,7 @@ export function MainPlaybackControls({
 		}
 	}, [debouncedIsPlaying, debouncedBuffering])
 
-	const skipButtonSize = size === 'compact' ? 40 : 46
+	const skipButtonSize = 48
 	const playButtonSize = size === 'compact' ? 80 : 96
 	const gap = size === 'compact' ? 24 : 40
 
@@ -256,6 +256,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
-		gap: 32,
+		gap: 8,
+		flexWrap: 'wrap',
 	},
 })

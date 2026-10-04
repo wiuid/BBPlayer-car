@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ViewStyle } from 'react-native'
-import { Pressable, StyleSheet } from 'react-native'
+import { Pressable, StyleSheet, useWindowDimensions } from 'react-native'
 import SquircleView from 'react-native-fast-squircle'
 import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
 import { useTheme } from 'react-native-paper'
@@ -26,13 +26,17 @@ export default function AnimatedModalOverlay({
 	contentStyle,
 }: Props) {
 	const insets = useSafeAreaInsets()
+	const window = useWindowDimensions()
 	const { height } = useReanimatedKeyboardAnimation()
 	const theme = useTheme()
 	const [showContent, setShowContent] = useState(false)
 
 	const wrapperAvoiding = useAnimatedStyle(() => {
 		const k = Math.max(0, Math.abs(height.value) - insets.bottom)
-		return { paddingBottom: k }
+		return {
+			paddingTop: insets.top,
+			paddingBottom: k + insets.bottom,
+		}
 	})
 
 	if (!visible) return null
@@ -47,6 +51,12 @@ export default function AnimatedModalOverlay({
 					styles.content,
 					{
 						marginHorizontal: Math.max(insets.left, insets.right, 26),
+						maxWidth: 560,
+						alignSelf: 'center',
+						width: Math.max(
+							0,
+							window.width - Math.max(insets.left, insets.right, 26) * 2,
+						),
 						opacity: showContent ? 1 : 0,
 					},
 				]}

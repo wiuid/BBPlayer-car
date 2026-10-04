@@ -14,7 +14,7 @@ import {
 	SecondaryPlaybackControls,
 } from './PlayerControlContent'
 
-export function PodcastControls() {
+export function PodcastControls({ compact = false }: { compact?: boolean }) {
 	const { colors } = useTheme()
 	const { speed, sleepEndTime } = usePlaybackOptions()
 	const [now, setNow] = useState(() => Date.now())
@@ -57,8 +57,8 @@ export function PodcastControls() {
 	]
 	return (
 		<View>
-			<View style={{ marginTop: 24 }}>
-				<MainPlaybackControls />
+			<View style={{ marginTop: compact ? 4 : 24 }}>
+				<MainPlaybackControls size={compact ? 'compact' : 'normal'} />
 			</View>
 			<SecondaryPlaybackControls>
 				{actions.map((action) => (

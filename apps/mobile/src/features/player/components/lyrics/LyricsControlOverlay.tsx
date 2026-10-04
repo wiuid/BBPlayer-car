@@ -2,9 +2,10 @@ import { Icon as ExpoIcon } from '@expo/ui'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { LinearGradient } from 'expo-linear-gradient'
 import { memo } from 'react'
-import { Dimensions, StyleSheet, View } from 'react-native'
+import { useWindowDimensions, StyleSheet, View } from 'react-native'
 import { Touchable } from 'react-native-gesture-handler'
 import { Icon, useTheme } from 'react-native-paper'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { MenuView } from '@/components/common/FunctionalMenu'
 import { MainPlaybackControls } from '@/features/player/components/controls/PlayerControlContent'
@@ -32,9 +33,13 @@ const OFFSET_ICON = ExpoIcon.select({
 	android: import('@expo/material-symbols/swap_vertical_circle.xml'),
 })
 
-const { height: windowHeight } = Dimensions.get('window')
-// 面板高度 = 底部控件（~211px）+ 顶部 60px 渐隐条，刚好延伸到菜单按钮上方
-export const LYRICS_CONTROLS_OVERLAY_HEIGHT = Math.min(windowHeight * 0.4, 280)
+export function getLyricsControlsHeight(
+	width: number,
+	height: number,
+	bottom: number,
+) {
+	return (width > height && height < 550 ? 160 : 280) + bottom
+}
 
 interface LyricsControlOverlayProps {
 	offsetMenuVisible: boolean
@@ -54,6 +59,9 @@ export const LyricsControlOverlay = memo(function LyricsControlOverlay({
 	onOpenOffsetMenu,
 }: LyricsControlOverlayProps) {
 	const { colors } = useTheme()
+	const { width, height } = useWindowDimensions()
+	const insets = useSafeAreaInsets()
+	const compact = width > height && height < 550
 	const isFluidBackground = useAppStore(
 		(state) => state.settings.playerBackgroundStyle === 'fluid',
 	)
@@ -84,7 +92,10 @@ export const LyricsControlOverlay = memo(function LyricsControlOverlay({
 
 	return (
 		<MaskedView
-			style={styles.overlayContainer}
+			style={[
+				styles.overlayContainer,
+				{ height: getLyricsControlsHeight(width, height, insets.bottom) },
+			]}
 			maskElement={
 				<View
 					style={styles.maskElement}
@@ -112,7 +123,12 @@ export const LyricsControlOverlay = memo(function LyricsControlOverlay({
 					]}
 				/>
 			)}
-			<View style={styles.playerControls}>
+			<View
+				style={[
+					styles.playerControls,
+					{ bottom: compact ? insets.bottom + 8 : insets.bottom + 50 },
+				]}
+			>
 				{/* 功能按钮，位于 slider 上方右侧 */}
 				<View style={styles.actionMenuRow}>
 					<MenuView {...menuActions}>
@@ -131,9 +147,25 @@ export const LyricsControlOverlay = memo(function LyricsControlOverlay({
 						</Touchable>
 					</MenuView>
 				</View>
-				<PlayerSlider />
-				<View style={styles.playbackButtonsWrapper}>
-					<MainPlaybackControls size='compact' />
+				<View
+					style={
+						compact
+							? {
+									flexDirection: 'row',
+									alignItems: 'center',
+									paddingHorizontal: 16,
+								}
+							: undefined
+					}
+				>
+					<View style={compact ? { flex: 1, minWidth: 0 } : undefined}>
+						<PlayerSlider />
+					</View>
+					<View
+						style={[styles.playbackButtonsWrapper, compact && { marginTop: 0 }]}
+					>
+						<MainPlaybackControls size='compact' />
+					</View>
 				</View>
 			</View>
 		</MaskedView>
@@ -146,7 +178,6 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		left: 0,
 		right: 0,
-		height: LYRICS_CONTROLS_OVERLAY_HEIGHT,
 	},
 	maskElement: {
 		flex: 1,

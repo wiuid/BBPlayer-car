@@ -6,7 +6,6 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { useEffect, useState } from 'react'
 import type { ColorSchemeName } from 'react-native'
 import {
-	Dimensions,
 	Pressable,
 	StyleSheet,
 	TouchableOpacity,
@@ -30,19 +29,18 @@ import {
 } from '@/theme/dimensions'
 import { getGradientColors } from '@/utils/color'
 
-const { width: screenWidth } = Dimensions.get('window')
-
-const COVER_SIZE_RECT = screenWidth - 80
-const COVER_SIZE_CIRCLE = screenWidth - 120
-
 export function TrackInfo({
 	onArtistPress,
 	onPressCover,
 	coverRef,
+	rectCoverSize,
+	circleCoverSize,
 }: {
 	onArtistPress: () => void
 	onPressCover: () => void
 	coverRef: ImageRef | null
+	rectCoverSize: number
+	circleCoverSize: number
 }) {
 	const { colors } = useTheme()
 
@@ -103,13 +101,13 @@ export function TrackInfo({
 			<Computed>
 				{() => {
 					const podcast = playbackContextStore$.context.mode.get() === 'podcast'
-					const coverSize = podcast ? COVER_SIZE_RECT : COVER_SIZE_CIRCLE
+					const coverSize = podcast ? rectCoverSize : circleCoverSize
 					const coverBorderRadius = podcast
-						? COVER_SIZE_RECT * SQUIRCLE_RADIUS_RATIO
+						? rectCoverSize * SQUIRCLE_RADIUS_RATIO
 						: coverSize / 2
 					return (
 						<Pressable
-							style={styles.coverContainer}
+							style={[styles.coverContainer, { height: rectCoverSize + 48 }]}
 							onPress={podcast ? undefined : onPressCover}
 							disabled={podcast}
 						>
@@ -233,7 +231,6 @@ const styles = StyleSheet.create({
 	coverContainer: {
 		alignItems: 'center',
 		justifyContent: 'center',
-		height: COVER_SIZE_RECT + 48,
 		paddingHorizontal: 32,
 	},
 	coverGradient: {

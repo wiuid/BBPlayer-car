@@ -1,7 +1,4 @@
-const {
-	withGradleProperties,
-	withAppBuildGradle,
-} = require('expo/config-plugins')
+const { withGradleProperties } = require('expo/config-plugins')
 
 const withAbiFilters = (config, { abiFilters = ['arm64-v8a'] } = {}) => {
 	// Set gradle.properties
@@ -23,25 +20,7 @@ const withAbiFilters = (config, { abiFilters = ['arm64-v8a'] } = {}) => {
 		return config
 	})
 
-	// Set build.gradle ndk.abiFilters
-	config = withAppBuildGradle(config, (config) => {
-		const abiFiltersString = abiFilters.map((abi) => `"${abi}"`).join(', ')
-
-		// Add ndk abiFilters to defaultConfig
-		if (config.modResults.contents.includes('defaultConfig {')) {
-			config.modResults.contents = config.modResults.contents.replace(
-				/(defaultConfig\s*\{[^}]*versionName\s+[^}]*)/,
-				`$1
-        
-        ndk {
-            abiFilters ${abiFiltersString}
-        }`,
-			)
-		}
-
-		return config
-	})
-
+	// React Native's Gradle plugin derives ndk.abiFilters from this property.
 	return config
 }
 

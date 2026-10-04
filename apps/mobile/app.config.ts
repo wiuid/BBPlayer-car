@@ -20,6 +20,7 @@ import { version } from './package.json'
 
 const IS_DEV = process.env.APP_VARIANT === 'development'
 const IS_PREVIEW = process.env.APP_VARIANT === 'preview'
+const IS_ANDROID_SLIM = process.env.ANDROID_SLIM === 'true'
 const UPDATE_SERVER_URL = 'https://updates.bbplayer.roitium.com'
 const UPDATE_CHANNEL = IS_DEV
 	? 'development'
@@ -101,7 +102,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 		name: getAppName(),
 		slug: 'bbplayer',
 		version: version,
-		orientation: 'portrait',
+		orientation: 'default',
 		icon: './assets/images/icon.png',
 		scheme: 'bbplayer',
 		userInterfaceStyle: 'automatic',
@@ -187,8 +188,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 			expoBuildProperties({
 				android: {
 					usesCleartextTraffic: true,
-					enableMinifyInReleaseBuilds: false,
-					enableShrinkResourcesInReleaseBuilds: false,
+					enableMinifyInReleaseBuilds: IS_ANDROID_SLIM,
+					enableShrinkResourcesInReleaseBuilds: IS_ANDROID_SLIM,
 					minSdkVersion: 26,
 					packagingOptions: {
 						pickFirst: ['lib/*/libNitroModules.so'],
@@ -310,7 +311,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 			),
 		},
 		updates: {
-			enabled: true,
+			enabled: !IS_ANDROID_SLIM,
 			url: `${UPDATE_SERVER_URL}/api/manifest`,
 			requestHeaders: {
 				'expo-channel-name': UPDATE_CHANNEL,

@@ -15,6 +15,7 @@ import Animated, {
 	useSharedValue,
 	useDerivedValue,
 } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { scheduleOnRN } from 'react-native-worklets'
 
 import ActivityIndicator from '@/components/common/ActivityIndicator'
@@ -31,7 +32,7 @@ import { toastAndLogError } from '@/utils/error-handling'
 import { ModernLyricLineItem, OldSchoolLyricLineItem } from './LyricLineItem'
 import {
 	LyricsControlOverlay,
-	LYRICS_CONTROLS_OVERLAY_HEIGHT,
+	getLyricsControlsHeight,
 } from './LyricsControlOverlay'
 import { LyricsOffsetControl } from './LyricsOffsetControl'
 
@@ -43,6 +44,12 @@ const Lyrics = memo(function Lyrics({
 	onPressBackground?: () => void
 }) {
 	const dimensions = useWindowDimensions()
+	const insets = useSafeAreaInsets()
+	const lyricsControlsHeight = getLyricsControlsHeight(
+		dimensions.width,
+		dimensions.height,
+		insets.bottom,
+	)
 	const windowHeight = dimensions.height
 	const colors = useTheme().colors
 	const isFluidBackground = useAppStore(
@@ -344,7 +351,15 @@ const Lyrics = memo(function Lyrics({
 			style={styles.lyricsContainer}
 			testID='player-lyrics-view'
 		>
-			<View style={styles.lyricsContent}>
+			<View
+				style={[
+					styles.lyricsContent,
+					dimensions.width > dimensions.height &&
+						dimensions.height < 550 && {
+							marginBottom: lyricsControlsHeight - 40,
+						},
+				]}
+			>
 				<MaskedView
 					style={{ flex: 1 }}
 					maskElement={
@@ -371,7 +386,7 @@ const Lyrics = memo(function Lyrics({
 								style={[
 									styles.gradient,
 									isFluidBackground && {
-										height: LYRICS_CONTROLS_OVERLAY_HEIGHT,
+										height: lyricsControlsHeight,
 									},
 								]}
 								start={{ x: 0, y: 0 }}
@@ -379,7 +394,7 @@ const Lyrics = memo(function Lyrics({
 								colors={[colors.background, 'transparent']}
 								locations={[
 									0,
-									isFluidBackground ? 60 / LYRICS_CONTROLS_OVERLAY_HEIGHT : 1,
+									isFluidBackground ? 60 / lyricsControlsHeight : 1,
 								]}
 							/>
 						</View>

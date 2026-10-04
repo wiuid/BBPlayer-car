@@ -47,6 +47,20 @@
 				"ABI_FILTERS": "armeabi-v7a,arm64-v8a,x86,x86_64"
 			}
 		},
+		"android-slim": {
+			"extends": "preview",
+			"env": {
+				"APP_VARIANT": "preview",
+				"ABI_FILTERS": "arm64-v8a",
+				"ANDROID_SLIM": "true"
+			}
+		},
+		"android-slim-v7a": {
+			"extends": "android-slim",
+			"env": {
+				"ABI_FILTERS": "armeabi-v7a"
+			}
+		},
 		"preview": {
 			"autoIncrement": false,
 			"distribution": "internal",

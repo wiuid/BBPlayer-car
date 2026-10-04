@@ -313,6 +313,8 @@ export default function PlayerPage() {
 						styles.container,
 						{
 							paddingTop: insets.top,
+							paddingLeft: insets.left,
+							paddingRight: insets.right,
 						},
 					]}
 				>
