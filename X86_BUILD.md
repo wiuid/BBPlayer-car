@@ -169,6 +169,20 @@ VERSION_CODE=1230 bash scripts/build-android-preview.sh armeabi-v7a \
   > /opt/bbplayer/build-background-v7a.log 2>&1
 ```
 
+The v7a Release build succeeded in 20m 22s. The APK is 65,258,001 bytes,
+contains only `armeabi-v7a`, and has package ID
+`com.roitium.bbplayer.preview`, versionCode 1230 and minimum SDK 26. APK
+signature verification passed with the same certificate as previous builds.
+The remote artifact, current server file and complete HTTPS download match:
+`242497b2ffefdfb573e5c14b31e9902c2e226a81cc0aaec3386a7df55821b586`.
+
+Download:
+`https://files.webraa.com/bbplayer-2.7.0-responsive-1230-armeabi-v7a.apk`.
+R8 mappings: `/opt/bbplayer/artifacts/mapping-1230-armeabi-v7a`.
+Application source commit: `830a9d05`. Only v7a was rebuilt; the published
+ARM64 preview remains versionCode 1227. Light/dark visual appearance still
+requires a physical-device check.
+
 ### Maximize and restore player, versionCode 1229
 
 The landscape player's fullscreen icon switches from browsing plus player
