@@ -5,8 +5,9 @@
 The current ARM server owns the source changes and public downloads. The x86
 host is used only for Android compilation. Do not install x86 Android SDK
 executables on the ARM server. The upstream app version remains `2.7.0`;
-the maximize/restore update uses Android `versionCode=1229`
-(split workspace: 1228; phone landscape: 1227; initial wide screen: 1226).
+the unified-background update uses Android `versionCode=1230`
+(maximize/restore: 1229; split workspace: 1228; phone landscape: 1227;
+initial wide screen: 1226).
 
 ### Set up the x86 host
 
@@ -89,9 +90,9 @@ swapon --show
 # Only if the existing swap file is inactive:
 # swapon /opt/bbplayer/build.swap
 cd /opt/bbplayer/source/BBPlayer
-VERSION_CODE=1229 bash scripts/build-android-preview.sh armeabi-v7a \
+VERSION_CODE=1230 bash scripts/build-android-preview.sh armeabi-v7a \
   > /opt/bbplayer/build-responsive-v7a.log 2>&1
-VERSION_CODE=1229 bash scripts/build-android-preview.sh arm64-v8a \
+VERSION_CODE=1230 bash scripts/build-android-preview.sh arm64-v8a \
   > /opt/bbplayer/build-responsive-arm64.log 2>&1
 ```
 
@@ -112,15 +113,15 @@ to the ARM server; the download domain must not depend on the build host.
 
 ```bash
 # Run on the current ARM server; transfer to a temporary file first.
-scp root@60.205.142.63:/opt/bbplayer/artifacts/bbplayer-2.7.0-responsive-1229-armeabi-v7a.apk \
-  /var/www/bbplayer/bbplayer-2.7.0-responsive-1229-armeabi-v7a.apk.part
-mv /var/www/bbplayer/bbplayer-2.7.0-responsive-1229-armeabi-v7a.apk.part \
-  /var/www/bbplayer/bbplayer-2.7.0-responsive-1229-armeabi-v7a.apk
+scp root@60.205.142.63:/opt/bbplayer/artifacts/bbplayer-2.7.0-responsive-1230-armeabi-v7a.apk \
+  /var/www/bbplayer/bbplayer-2.7.0-responsive-1230-armeabi-v7a.apk.part
+mv /var/www/bbplayer/bbplayer-2.7.0-responsive-1230-armeabi-v7a.apk.part \
+  /var/www/bbplayer/bbplayer-2.7.0-responsive-1230-armeabi-v7a.apk
 # Repeat the transfer and rename for arm64-v8a.
 cd /var/www/bbplayer
 sha256sum *.apk > SHA256SUMS
 curl --fail --location \
-  https://files.webraa.com/bbplayer-2.7.0-responsive-1229-armeabi-v7a.apk \
+  https://files.webraa.com/bbplayer-2.7.0-responsive-1230-armeabi-v7a.apk \
   --output /tmp/bbplayer-responsive-v7a-download.apk
 sha256sum /tmp/bbplayer-responsive-v7a-download.apk
 ```
@@ -154,6 +155,19 @@ Root lint reports the pre-existing unnecessary assertion in
 `apps/mobile/src/app/settings/account.tsx:74`.
 
 ## Build state
+
+### Unified player background, versionCode 1230
+
+The cover and audio-control pane now uses the same Material theme
+`colors.background` as the lyrics workspace, replacing
+`colors.elevation.level1`. This applies to both split and maximized layouts
+and follows light/dark theme changes. Root type-check and lint reported
+only the existing backend `Env` and account-page assertion failures.
+
+```bash
+VERSION_CODE=1230 bash scripts/build-android-preview.sh armeabi-v7a \
+  > /opt/bbplayer/build-background-v7a.log 2>&1
+```
 
 ### Maximize and restore player, versionCode 1229
 

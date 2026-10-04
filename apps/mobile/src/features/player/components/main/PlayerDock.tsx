@@ -49,7 +49,7 @@ export default function PlayerDock({
 					paddingBottom: insets.bottom + 8,
 					paddingLeft: maximized ? insets.left + 8 : 8,
 					paddingRight: maximized ? 8 : insets.right + 8,
-					backgroundColor: colors.elevation.level1,
+					backgroundColor: colors.background,
 					borderLeftColor: colors.outlineVariant,
 				},
 			]}
