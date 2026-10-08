@@ -1,5 +1,8 @@
 # BBPlayer-car
 
+本仓库是 [@roitium](https://github.com/roitium) 的 [bbplayer-app/BBPlayer](https://github.com/bbplayer-app/BBPlayer) 中桌面端部分的独立拆分，版权归原作者所有（见 开源许可）。 移动端（React Native）与其余组件仍在上游仓库维护。
+
+
 支持手机横屏、平板和 Android 车机宽屏界面的 BBPlayer 分支。
 <img width="2400" height="1080" alt="Screenshot_2026-10-04-11-39-05-014_com roitium bbplayer preview" src="https://github.com/user-attachments/assets/32861b8f-8fd3-4d82-8253-1f5d217c5e4a" />
 
